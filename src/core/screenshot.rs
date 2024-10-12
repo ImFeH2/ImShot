@@ -1,4 +1,4 @@
-use crate::utils::image;
+use crate::utils::image::Image;
 use windows::Win32::Foundation::HWND;
 use windows::Win32::Graphics::Gdi::{BitBlt, CreateCompatibleBitmap, CreateCompatibleDC, DeleteDC, DeleteObject, GetDC, SelectObject, HBITMAP, SRCCOPY};
 use windows::Win32::UI::WindowsAndMessaging::GetDesktopWindow;
@@ -10,7 +10,7 @@ impl Screenshot {
         Self
     }
 
-    pub fn shot(&self, x1: i32, y1: i32, x2: i32, y2: i32) -> image::ImageSaver {
+    pub fn shot(&self, x1: i32, y1: i32, x2: i32, y2: i32) -> Image {
         unsafe {
             let hwnd: HWND = GetDesktopWindow();
             let hdc = GetDC(hwnd);
@@ -26,7 +26,7 @@ impl Screenshot {
 
             BitBlt(hdc_mem, 0, 0, width, height, hdc, x1, y1, SRCCOPY).expect("BitBlt failed");
 
-            let image = image::ImageSaver::from_bitmap(hdc_mem, width as u32, height as u32);
+            let image = Image::from_bitmap(hdc_mem, width as u32, height as u32);
 
             let _ = DeleteObject(hbm);
             let _ = DeleteDC(hdc_mem);
